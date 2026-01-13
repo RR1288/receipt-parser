@@ -14,14 +14,14 @@ class TargetParser extends BaseParser {
 
         for (const line of lines) {
             // Check subtotal
-            const subtotalMatch = line.match(/^SUBTOTAL\s+\$([\d.]+)i/);
+            const subtotalMatch = line.match(/^SUBTOTAL\s+\$([\d.]+)/i);
             if (subtotalMatch) {
                 subtotal = parseFloat(subtotalMatch[1]);
                 continue;
             }
 
             // Check total
-            const totalMatch = line.match(/^TOTAL\s+\$([\d.]+)i/);
+            const totalMatch = line.match(/^TOTAL\s+\$([\d.]+)/i);
             if (totalMatch) {
                 total = parseFloat(totalMatch[1]);
                 continue;
