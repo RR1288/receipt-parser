@@ -1,23 +1,26 @@
 const Receipt = require("../models/Receipt");
 const {extractText} = require("../services/ocrService");
-const {getParser} = require("../services/parsers");
-const {detectStore} = require("../services/storeDetector");
+const {getProcessor} = require("../services/processors");
 
 async function uploadReceipt(req, res) {
     try {
-        console.log(req.file);
-
         const imagePath = req.file.path;
-
-        const rawText = await extractText(imagePath);
-        const store = detectStore(rawText);
-        const parser = getParser(store);
-
-        if (!parser) {
-            return res.status(400).json({error: "Unsupported store"});
+        // Store will be provided by the user
+        // const store = detectStore(rawText);
+        const {store} = req.body;
+        if (!store) {
+            return res.status(400).json({error: "Store is required"});
         }
 
-        const result = parser.parse(rawText);
+        const processor = getProcessor(store);
+        if (!processor) {
+            return res.statues(400).json({error: "Unsupported store"});
+        }
+        const processedImage = await processor.preprocessImage(imagePath);
+
+        const rawText = await extractText(processedImage);
+
+        const result = processor.parseText(rawText);
         const receipt = await Receipt.create({
             store,
             items: result.items,

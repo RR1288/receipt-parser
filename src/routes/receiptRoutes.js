@@ -22,6 +22,13 @@ const upload = multer({dest: "uploads/"});
  *               receipt:
  *                 type: string
  *                 format: binary
+ *               store:
+ *                 type: string
+ *                 description: Store the receipt belongs to
+ *                 enum: 
+ *                   - target
+ *                   - walmart
+ *                   - aldi
  *     responses:
  *       200:
  *         description: Parsed receipt
